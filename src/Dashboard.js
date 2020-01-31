@@ -1,4 +1,5 @@
 import React from'react'
+import { connect } from 'react-redux'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -7,7 +8,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   }));
 
 
-export default function Dashboard(){
+function Dashboard(props){
     const classes= useStyles();
     const [textValue,changeTextvalue]= React.useState('')
     return (
@@ -65,11 +65,10 @@ export default function Dashboard(){
                     </div>
                     <div className={classes.chatWindow}>
                         {
-                            [{from:'User',msg:'hello'}].map((chat,i) =>
+                            props.messages.general.map((chat,i) =>
                                 (<div className={classes.flex}>
                                     <Chip
-                                    avatar={<Avatar>{chat.from.split('')[0]}</Avatar>}
-                                    label={chat.from}
+                                    label={chat.user}
                                     />
                                     <Typography variant="p">
                                         {chat.msg}
@@ -90,10 +89,25 @@ export default function Dashboard(){
                             variant="contained"
                             className={classes.chatButton} 
                             color="primary">
-                                Primary
+                                Send
                         </Button>
                 </div>
             </Paper>
         </div>
     )
 }
+
+const mapStateToProps= state => {
+    return {
+        messages:state
+    }
+}
+
+const mapDispatchToProps= dispatch => {
+    return {
+        sendmessage: (from,msg,topic)=>{
+            dispatch({type:'RECEIVE_MESSAGE', payload:{ from,msg,topic }})        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard)
