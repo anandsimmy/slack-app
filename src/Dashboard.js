@@ -41,22 +41,24 @@ const useStyles = makeStyles(theme => ({
 
 function Dashboard(props){
     const classes= useStyles();
+    const topics= Object.keys(props.messages)
     const [textValue,changeTextvalue]= React.useState('')
+    const [activeTopic,changeActiveTopic]= React.useState(topics[0])
     return (
         <div >
             <Paper className={classes.root} elevation={3} >
                 <Typography variant='h4' component='h4'>
-                    Chat App 
+                    Chat
                 </Typography>
                 <Typography variant='h5' component='h5'>
-                    Topic placeholder
+                    {activeTopic}
                 </Typography>
                 <div className={classes.flex}>
                     <div className={classes.topicWindow}>
                         <List>
                             {
-                                ['topic'].map(topic =>
-                                    (<ListItem key={topic} button>
+                                topics.map(topic =>
+                                    (<ListItem onClick={e  => changeActiveTopic(e.target.innerText)} key={topic} button>
                                         <ListItemText primary={topic}/>
                                     </ListItem>)
                                     )
@@ -65,12 +67,12 @@ function Dashboard(props){
                     </div>
                     <div className={classes.chatWindow}>
                         {
-                            props.messages.general.map((chat,i) =>
+                            props.messages[activeTopic].map((chat,i) =>
                                 (<div className={classes.flex}>
                                     <Chip
                                     label={chat.user}
                                     />
-                                    <Typography variant="p">
+                                    <Typography variant="body1" gutterBottom>
                                         {chat.msg}
                                     </Typography>
                                 </div>
@@ -88,7 +90,8 @@ function Dashboard(props){
                         <Button 
                             variant="contained"
                             className={classes.chatButton} 
-                            color="primary">
+                            color="primary"
+                            onClick={ ()=>props.sendChatAction(textValue) }>
                                 Send
                         </Button>
                 </div>

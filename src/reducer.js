@@ -4,13 +4,14 @@ const initState={
 }
 
 const reducer = (state=initState,action) => {
+    const {topic,from,msg}=action;
     switch(action.type){
         case 'RECEIVE_MESSAGE':
             return {
                 ...state,
-                [action.payload.topic]:[
-                    ...state[action.payload.topic],
-                    { user:action.payload.user, msg:action.payload.msg }
+                [topic]:[
+                    ...state[topic],
+                    {from, msg }
                 ]
             }
         default:
